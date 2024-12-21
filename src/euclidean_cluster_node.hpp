@@ -20,6 +20,7 @@
 
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <vision_msgs/msg/detection3_d_array.hpp>
 
 #include <chrono>
 #include <memory>
@@ -36,6 +37,7 @@ private:
 
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pointcloud_sub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr clustered_pub_;
+  rclcpp::Publisher<vision_msgs::msg::Detection3DArray>::SharedPtr detection_obj_visual_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr debug_pub_;
 
   std::shared_ptr<EuclideanCluster> cluster_;
