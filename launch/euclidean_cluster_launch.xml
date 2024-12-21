@@ -1,0 +1,18 @@
+<launch>
+  <!-- Declare path to the parameters YAML file -->
+  <arg name="param_file" default="$(find lidar_object_detection)/config/euclidean_cluster_node_params.yaml" />
+
+  <!-- Node configuration -->
+  <node
+    pkg="your_package"
+    exec="euclidean_cluster_node"
+    name="euclidean_cluster_node"
+    output="screen">
+    <!-- Pass the parameter file -->
+    <param from="$(arg param_file)" />
+
+    <!-- Topic remappings -->
+    <remap from="velodyne_points" to="/input/velodyne_points" />
+    <remap from="clustered_points" to="/output/clustered_points" />
+  </node>
+</launch>
