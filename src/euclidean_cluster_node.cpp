@@ -72,4 +72,6 @@ void EuclideanClusterNode::onPointCloud(
 }
 
 }  // namespace autoware::euclidean_cluster
+#include <rclcpp_components/register_node_macro.hpp>
 
+RCLCPP_COMPONENTS_REGISTER_NODE(lidar_object_detection::euclidean_cluster::EuclideanClusterNode)
