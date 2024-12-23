@@ -1,0 +1,19 @@
+<launch>
+  <!-- Declare path to the parameters YAML file -->
+  <arg name="param_file" default="$(find lidar_object_detection)/config/dbscan_cluster_node_params.yaml" />
+
+  <!-- Node configuration -->
+  <node
+    pkg="lidar_object_detection"
+    exec="dbscan_cluster_node"
+    name="dbscan_cluster_node"
+    output="screen">
+    <!-- Pass the parameter file -->
+    <param from="$(arg param_file)" />
+
+    <!-- Topic remappings -->
+    <remap from="velodyne_points" to="/input/velodyne_points" />
+    <remap from="clustered_points" to="/output/clustered_points" />
+    <remap from="detected_objects" to="/output/detected_objects" />
+  </node>
+</launch>

@@ -10,7 +10,7 @@
 #include <vector>
 
 // Utility function to convert a vector of PointCloud2 to a Detection3DArray
-void convertPointCloudsToDetection3DArray(
+static void convertPointCloudsToDetection3DArray(
     const std::vector<pcl::PointCloud<pcl::PointXYZ>> &clusters,
     vision_msgs::msg::Detection3DArray &detections)
 {

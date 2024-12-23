@@ -26,18 +26,13 @@ include_directories(
   ${PCL_INCLUDE_DIRS}
 )
 
-# Build the node as a shared library
-add_library(${PROJECT_NAME}_node SHARED
-  src/euclidean_cluster_node.cpp
+# Euclidean Clustering library
+add_library(${PROJECT_NAME}_euclidean_cluster_lib SHARED
   lib/euclidean_cluster.cpp
+  lib/cluster.cpp
 )
 
-target_include_directories(${PROJECT_NAME}_node PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-ament_target_dependencies(${PROJECT_NAME}_node
+ament_target_dependencies(${PROJECT_NAME}_euclidean_cluster_lib
   rclcpp
   rclcpp_components
   sensor_msgs
@@ -46,12 +41,87 @@ ament_target_dependencies(${PROJECT_NAME}_node
   PCL
 )
 
-# Register the node as a component
-rclcpp_components_register_nodes(${PROJECT_NAME}_node "lidar_object_detection::euclidean_cluster::EuclideanClusterNode")
+target_include_directories(${PROJECT_NAME}_euclidean_cluster_lib
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 
-# Install the library
+# DBSCAN Clustering library
+add_library(${PROJECT_NAME}_dbscan_cluster_lib SHARED
+  lib/dbScan.cpp
+  lib/cluster.cpp
+  lib/OctreeGenerator.cpp
+)
+
+ament_target_dependencies(${PROJECT_NAME}_dbscan_cluster_lib
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+  vision_msgs
+  pcl_conversions
+  PCL
+)
+
+target_include_directories(${PROJECT_NAME}_dbscan_cluster_lib
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+# Euclidean Clustering node
+add_library(${PROJECT_NAME}_euclidean_cluster_node_core SHARED
+  src/euclidean_cluster_node.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}_euclidean_cluster_node_core
+  ${PROJECT_NAME}_euclidean_cluster_lib
+)
+
+ament_target_dependencies(${PROJECT_NAME}_euclidean_cluster_node_core
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+  vision_msgs
+  pcl_conversions
+  PCL
+)
+
+rclcpp_components_register_node(${PROJECT_NAME}_euclidean_cluster_node_core
+  PLUGIN "lidar_object_detection::euclidean_cluster::EuclideanClusterNode"
+  EXECUTABLE euclidean_cluster_node
+)
+
+# DBSCAN Clustering node
+add_library(${PROJECT_NAME}_dbscan_cluster_node_core SHARED
+  src/dbscan_cluster_node.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}_dbscan_cluster_node_core
+  ${PROJECT_NAME}_dbscan_cluster_lib
+)
+
+ament_target_dependencies(${PROJECT_NAME}_dbscan_cluster_node_core
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+  vision_msgs
+  pcl_conversions
+  PCL
+)
+
+rclcpp_components_register_node(${PROJECT_NAME}_dbscan_cluster_node_core
+  PLUGIN "lidar_object_detection::dbscan::DBScanClusterNode"
+  EXECUTABLE dbscan_cluster_node
+)
+
+# Install libraries and nodes
 install(
-  TARGETS ${PROJECT_NAME}_node
+  TARGETS
+    ${PROJECT_NAME}_euclidean_cluster_lib
+    ${PROJECT_NAME}_dbscan_cluster_lib
+    ${PROJECT_NAME}_euclidean_cluster_node_core
+    ${PROJECT_NAME}_dbscan_cluster_node_core
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -77,3 +147,4 @@ install(
 
 # Ament package generation
 ament_package()
+

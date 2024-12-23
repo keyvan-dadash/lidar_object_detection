@@ -1,0 +1,6 @@
+dbscan_cluster_node:
+  ros__parameters:
+    octree_resolution: 120
+    eps: 0.8
+    min_pts: 20
+    min_pts_aux: 5
