@@ -55,7 +55,7 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            add_launch_arg("input_pointcloud", "/velodyne_points"),
+            add_launch_arg("input_pointcloud", "/scan"),
             add_launch_arg("output_clusters", "/output/clustered_points"),
             add_launch_arg(
                 "euclidean_param_path",

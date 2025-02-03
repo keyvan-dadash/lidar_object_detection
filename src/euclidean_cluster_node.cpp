@@ -43,6 +43,29 @@ EuclideanClusterNode::EuclideanClusterNode(const rclcpp::NodeOptions &options)
   const float tolerance = this->declare_parameter("tolerance", 0.1);
   RCLCPP_INFO(this->get_logger(), "tolerance: %f", tolerance);
 
+
+  // Height
+  const double max_height = this->declare_parameter("max_height", 100.0);
+  RCLCPP_INFO(this->get_logger(), "max_height: %f", max_height);
+
+  const double min_height = this->declare_parameter("min_height", 1);
+  RCLCPP_INFO(this->get_logger(), "min_height: %f", min_height);
+
+  // width
+  const double max_width = this->declare_parameter("max_width", 100.0);
+  RCLCPP_INFO(this->get_logger(), "max_width: %f", max_width);
+
+  const double min_width = this->declare_parameter("min_width", 1);
+  RCLCPP_INFO(this->get_logger(), "min_width: %f", min_width);
+
+  // depth
+  const double max_depth = this->declare_parameter("max_depth", 100.0);
+  RCLCPP_INFO(this->get_logger(), "max_depth: %f", max_depth);
+
+  const double min_depth = this->declare_parameter("min_depth", 1);
+  RCLCPP_INFO(this->get_logger(), "min_depth: %f", min_depth);
+
+
   cluster_ = std::make_shared<EuclideanCluster>(
       use_height, min_cluster_size, max_cluster_size, distance_threshhold_seg,
       tolerance);

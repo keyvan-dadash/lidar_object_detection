@@ -1,7 +1,13 @@
 euclidean_cluster_node:
   ros__parameters:
     use_height: false
-    min_cluster_size: 20
-    max_cluster_size: 2000
-    distance_threshhold_seg: 0.07
-    tolerance: 0.05
+    min_cluster_size: 70
+    max_cluster_size: 5000
+    distance_threshhold_seg: 0.02
+    tolerance: 0.02
+    max_height: 100.0
+    min_height: 10.0
+    max_width: 100.0
+    min_width: 10.0
+    max_depth: 100.0
+    min_depth: 10.0
