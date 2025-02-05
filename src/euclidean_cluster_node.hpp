@@ -15,6 +15,7 @@
 #pragma once
 
 #include "lidar_object_detection/euclidean_cluster.hpp"
+#include "lidar_object_detection/utils.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -41,6 +42,7 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr debug_pub_;
 
   std::shared_ptr<EuclideanCluster> cluster_;
+  filter_options_t filter_ops;
 };
 
 }  // namespace autoware::euclidean_cluster

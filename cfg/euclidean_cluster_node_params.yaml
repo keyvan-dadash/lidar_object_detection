@@ -6,8 +6,12 @@ euclidean_cluster_node:
     distance_threshhold_seg: 0.02
     tolerance: 0.02
     max_height: 100.0
-    min_height: 10.0
+    min_height: 0.05
     max_width: 100.0
-    min_width: 10.0
+    min_width: 0.01
     max_depth: 100.0
-    min_depth: 10.0
+    min_depth: 0.01
+    max_zx: 1000.0
+    min_zx: 1.0
+    max_zy: 1000.0
+    min_zy: 1.0

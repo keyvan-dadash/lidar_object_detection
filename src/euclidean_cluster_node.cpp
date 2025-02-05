@@ -48,23 +48,51 @@ EuclideanClusterNode::EuclideanClusterNode(const rclcpp::NodeOptions &options)
   const double max_height = this->declare_parameter("max_height", 100.0);
   RCLCPP_INFO(this->get_logger(), "max_height: %f", max_height);
 
-  const double min_height = this->declare_parameter("min_height", 1);
+  const double min_height = this->declare_parameter("min_height", 1.0);
   RCLCPP_INFO(this->get_logger(), "min_height: %f", min_height);
+
+  filter_ops.max_height = max_height;
+  filter_ops.min_height = min_height;
 
   // width
   const double max_width = this->declare_parameter("max_width", 100.0);
   RCLCPP_INFO(this->get_logger(), "max_width: %f", max_width);
 
-  const double min_width = this->declare_parameter("min_width", 1);
+  const double min_width = this->declare_parameter("min_width", 1.0);
   RCLCPP_INFO(this->get_logger(), "min_width: %f", min_width);
+
+  filter_ops.max_width = max_width;
+  filter_ops.min_width = min_width;
 
   // depth
   const double max_depth = this->declare_parameter("max_depth", 100.0);
   RCLCPP_INFO(this->get_logger(), "max_depth: %f", max_depth);
 
-  const double min_depth = this->declare_parameter("min_depth", 1);
+  const double min_depth = this->declare_parameter("min_depth", 1.0);
   RCLCPP_INFO(this->get_logger(), "min_depth: %f", min_depth);
 
+  filter_ops.max_depth = max_depth;
+  filter_ops.min_depth = min_depth;
+
+  // zx
+  const double max_zx = this->declare_parameter("max_zx", 1000.0);
+  RCLCPP_INFO(this->get_logger(), "max_zx: %f", max_zx);
+
+  const double min_zx = this->declare_parameter("min_zx", 10.0);
+  RCLCPP_INFO(this->get_logger(), "min_zx: %f", min_zx); 
+
+  filter_ops.max_zx = max_zx;
+  filter_ops.min_zx = min_zx;
+
+  // zy
+  const double max_zy = this->declare_parameter("max_zy", 1000.0);
+  RCLCPP_INFO(this->get_logger(), "max_zy: %f", max_zy);
+
+  const double min_zy = this->declare_parameter("min_zy", 10.0);
+  RCLCPP_INFO(this->get_logger(), "min_zy: %f", min_zy); 
+
+  filter_ops.max_zy = max_zy;
+  filter_ops.min_zy = min_zy;
 
   cluster_ = std::make_shared<EuclideanCluster>(
       use_height, min_cluster_size, max_cluster_size, distance_threshhold_seg,
@@ -98,7 +126,7 @@ void EuclideanClusterNode::onPointCloud(
     clustered_pub_->publish(tmp);
   }
 
-  std::cout << clusters.size() << std::endl;
+  std::cout << "Number of detected objects: " << clusters.size() << std::endl;
 
 /*   pcl::PCDWriter writer;*/
    /*int j = 0;*/
@@ -119,8 +147,11 @@ void EuclideanClusterNode::onPointCloud(
   // Use the utility function to populate the detections
   convertPointCloudsToDetection3DArray(clusters, detections);
 
+  vision_msgs::msg::Detection3DArray post_processed_objs;
+  filter_objects(detections, post_processed_objs, filter_ops);
   // Publish the detections
-  detection_obj_visual_->publish(detections);
+  std::cout << "Number of detected objects after post process: " << post_processed_objs.detections.size() << std::endl;
+  detection_obj_visual_->publish(post_processed_objs);
 }
 
 } // namespace lidar_object_detection::euclidean_cluster

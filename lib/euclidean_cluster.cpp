@@ -148,7 +148,8 @@ bool EuclideanCluster::cluster(
   pcl_euclidean_cluster.setInputCloud(pointcloud_ptr);
   pcl_euclidean_cluster.extract(cluster_indices);
   // pcl_euclidean_cluster.segment(IndicesClusters &clusters)
-
+  //
+  
   // build output
   {
     for (const auto &cluster : cluster_indices) {
@@ -163,6 +164,7 @@ bool EuclideanCluster::cluster(
       clusters.back().is_dense = false;
     }
   }
+
   return true;
 }
 

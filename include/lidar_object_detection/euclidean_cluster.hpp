@@ -36,13 +36,11 @@ public:
   bool cluster(
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr & pointcloud) override;
   void setTolerance(float tolerance) { tolerance_ = tolerance; }
-  void preprocess(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& pointCloud, pcl::PointCloud<pcl::PointXYZ>::Ptr outputPointCloud);
-void removeLowestZPoints(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &input_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr &output_cloud);
-
+  void preprocess(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& pointCloud, pcl::PointCloud<pcl::PointXYZ>::Ptr outputPointCloud) override;
+  void removeLowestZPoints(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &input_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr &output_cloud);
 private:
   double distance_threshhold_seg;
   float tolerance_;
 };
-
 }  // namespace autoware::euclidean_cluster
 
