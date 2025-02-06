@@ -23,11 +23,14 @@ def launch_setup(context, *args, **kwargs):
     # Package name
     pkg = "lidar_object_detection"
 
+    namespace = LaunchConfiguration("namespace").perform(context)
+
     # Define the Euclidean Cluster Node
     euclidean_cluster_component = ComposableNode(
         package=pkg,
         plugin="lidar_object_detection::euclidean_cluster::EuclideanClusterNode",
         name="euclidean_cluster_node",
+        namespace=namespace,
         remappings=[
             ("velodyne_points", LaunchConfiguration("input_pointcloud")),
             ("clustered_points", LaunchConfiguration("output_clusters")),
@@ -35,10 +38,10 @@ def launch_setup(context, *args, **kwargs):
         parameters=[load_composable_node_param("euclidean_param_path", context)],
     )
 
-    # Define the container
+    # Define the container (use unique container name for multiple instances)
     container = ComposableNodeContainer(
-        name="euclidean_cluster_container",
-        namespace="",
+        name=f"euclidean_cluster_container_{namespace}",
+        namespace=namespace,
         package="rclcpp_components",
         executable="component_container_mt",
         composable_node_descriptions=[euclidean_cluster_component],
@@ -55,6 +58,7 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            add_launch_arg("namespace", "cluster1"),  # Default namespace, can override
             add_launch_arg("input_pointcloud", "/scan"),
             add_launch_arg("output_clusters", "/output/clustered_points"),
             add_launch_arg(
