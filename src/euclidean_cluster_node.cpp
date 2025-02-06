@@ -43,6 +43,14 @@ EuclideanClusterNode::EuclideanClusterNode(const rclcpp::NodeOptions &options)
   const float tolerance = this->declare_parameter("tolerance", 0.1);
   RCLCPP_INFO(this->get_logger(), "tolerance: %f", tolerance);
 
+  const std::string input_topic = this->declare_parameter("input_topic", "velodyne_points");
+  RCLCPP_INFO(this->get_logger(), "Input Topic: %s", input_topic.c_str());
+  
+  const std::string output_topic = this->declare_parameter("output_topic", "detected_objects");
+  RCLCPP_INFO(this->get_logger(), "Output Topic: %s", output_topic.c_str());
+ 
+  const std::string output_topic_clustered = this->declare_parameter("output_topic_clustered", "clustered_points");
+  RCLCPP_INFO(this->get_logger(), "Output Topic Clustered: %s", output_topic.c_str());
 
   // Height
   const double max_height = this->declare_parameter("max_height", 100.0);
@@ -100,13 +108,13 @@ EuclideanClusterNode::EuclideanClusterNode(const rclcpp::NodeOptions &options)
 
   using std::placeholders::_1;
   pointcloud_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-      "velodyne_points", rclcpp::SensorDataQoS().keep_last(1),
+      input_topic, rclcpp::SensorDataQoS().keep_last(1),
       std::bind(&EuclideanClusterNode::onPointCloud, this, _1));
 
   clustered_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
-      "clustered_points", rclcpp::QoS{1});
+      output_topic_clustered, rclcpp::QoS{1});
 
-  detection_obj_visual_ = this->create_publisher<vision_msgs::msg::Detection3DArray>("detected_objects", 10);
+  detection_obj_visual_ = this->create_publisher<vision_msgs::msg::Detection3DArray>(output_topic, 10);
 }
 
 void EuclideanClusterNode::onPointCloud(
